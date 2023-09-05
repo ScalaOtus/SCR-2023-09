@@ -5,5 +5,6 @@ name := "scr-2023-09"
 organization := "ru.otus"
 version := "1.0"
 
-
-
+scalacOptions ++= Seq(
+  "-Xexperimental"
+)
