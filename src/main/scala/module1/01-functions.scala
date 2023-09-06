@@ -61,7 +61,7 @@ object functions {
 
   val p: Printer = s => println(s)
 
-  p("hello")
+  p.print("hello")
 
 
 
