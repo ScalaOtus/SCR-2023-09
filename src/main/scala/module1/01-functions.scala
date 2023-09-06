@@ -56,7 +56,7 @@ object functions {
   // SAM Single Abstract Method
 
   trait Printer{
-    def print(str: String): Unit
+    def apply(str: String): Unit
   }
 
   val p: Printer = s => println(s)
