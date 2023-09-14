@@ -3,6 +3,7 @@ package module1
 import java.util.UUID
 import scala.annotation.tailrec
 import java.time.Instant
+import scala.collection.immutable.Stack
 import scala.language.postfixOps
 
 
@@ -218,6 +219,10 @@ object hof{
 
  }
 
+  trait Animal
+  case object Dog
+  case object Cat
+
  object list {
    /**
     *
@@ -226,6 +231,9 @@ object hof{
     * Nil - пустой список
     * Cons - непустой, содердит первый элемент (голову) и хвост (оставшийся список)
     */
+
+   Seq
+
 
     sealed trait List[+T] {
      /**
