@@ -25,6 +25,7 @@ object pattern_matching{
   // asInstanceOf
 
 
+
   sealed trait Animal{
     def name: String
     def age: Int
@@ -45,7 +46,9 @@ object pattern_matching{
    * Матчинг на литерал
    */
 
-  val dog: Animal = ???
+  val dog: Dog = ???
+
+  val Dog(n, age) = dog
 
   val Bim = "Bim"
 
@@ -69,10 +72,10 @@ object pattern_matching{
    * Матчинг с условием (гарды)
    */
 
-  dog match {
-    case Dog(name, age) if age > 5 => ???
-    case Cat(name, age) => ???
-  }
+//  dog match {
+//    case Dog(name, age) if age > 5 => ???
+//    case Cat(name, age) => ???
+//  }
 
 
 

@@ -241,6 +241,12 @@ object hof{
       *
       */
 
+      def ::[TT >: T](el: TT): List[TT] = new ::(el, this)
+
+
+
+
+
      /**
       * Метод mkString возвращает строковое представление списка, с учетом переданного разделителя
       *
@@ -269,6 +275,14 @@ object hof{
       *
       * Реализовать метод filter для списка который будет фильтровать список по некому условию
       */
+
+      def foldLeft = ???
+
+      def foldLeft2 = ???
+
+      def take = ???
+
+      def drop = ???
    }
     case class ::[A](head: A, tail: List[A]) extends List[A]
     case object Nil extends List[Nothing]
@@ -281,8 +295,6 @@ object hof{
     }
 
     // Пример создания экземпляра с помощью конструктора apply
-
-    List(1, 2, 3)
 
 
 
