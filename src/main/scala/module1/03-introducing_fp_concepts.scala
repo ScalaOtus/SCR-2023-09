@@ -253,6 +253,11 @@ object hof{
       *
       */
 
+      def mkString(delimeter: String): String = this match {
+        case ::(head, Nil) => s"$head"
+        case ::(head, tail) => s"$head$delimeter" + tail.mkString(delimeter)
+        case Nil => ""
+      }
      /**
       * Конструктор, позволяющий создать список из N - го числа аргументов
       * Для этого можно воспользоваться *
@@ -277,12 +282,18 @@ object hof{
       * Реализовать метод filter для списка который будет фильтровать список по некому условию
       */
 
-       def fib(n: Int): Int = {
-         if(n == 0 | n == 1) n
-         else fib(n - 1) + fib(n - 2)
-       }
+      def reverse: List[T] = foldLeft(List[T]()){case (acc, v) => v :: acc}
 
-      def :::[TT >: T](that: List[TT]): List[TT] = ???
+      def :::[TT >: T](that: List[TT]): List[TT] = {
+        def go(l1: List[TT], l2: List[TT], acc: List[TT]): List[TT] = l2 match {
+          case ::(head, tail) => go(l1, tail, acc.::(head))
+          case Nil => l1 match {
+            case ::(head, tail) => go(tail, Nil, acc.::(head))
+            case Nil => acc
+          }
+        }
+        go(this, that, Nil).reverse
+      }
 
 
 
