@@ -10,7 +10,7 @@ import scala.concurrent.duration.DurationInt
 import scala.concurrent.{Await, ExecutionContext, Future, Promise, TimeoutException}
 import scala.io.{BufferedSource, Source}
 import scala.language.{existentials, postfixOps}
-import scala.util.Try
+import scala.util.{Failure, Success, Try}
 
 object threads {
 
@@ -123,6 +123,37 @@ object executor {
 
 object try_{
 
+  def readFromFile(): List[Int] = {
+    val s: BufferedSource = Source.fromFile(new File("ints.txt"))
+    val result = try{
+      s.getLines().toList.map(_.toInt)
+    } catch {
+      case e: Throwable =>
+        println(e.getMessage)
+        Nil
+    }
+    s.close()
+    result
+  }
+
+  def  readFromFile2(): Try[List[Int]] = {
+    val source: Try[BufferedSource] = Try(Source.fromFile(new File("ints.txt")))
+//    val result = Try{
+//      s.getLines().toList.map(_.toInt)
+//    }
+//    s.close()
+//    result
+    def lines(s: Source) = Try(s.getLines().toList.map(_.toInt))
+
+    val r = for{
+      s <- source
+      l <- lines(s)
+    } yield l
+    source.foreach(_.close())
+    r
+  }
+
+
 
 }
 
@@ -149,5 +180,65 @@ object future{
   lazy val ec3 = ExecutionContext.fromExecutor(executor.pool3)
   lazy val ec4 = ExecutionContext.fromExecutor(executor.pool4)
 
+  def getRatesLocation1: Future[Int] = Future{
+    Thread.sleep(1000)
+    println("GetRatesLocation1")
+    10
+  }
+
+  def getRatesLocation2: Future[Int] = Future{
+    Thread.sleep(2000)
+    println("GetRatesLocation2")
+    20
+  }
+
+  def printRunningTime[T](v: => Future[T]): Future[T] = for{
+    start <- Future.successful(System.currentTimeMillis())
+    t <- v
+    end <- Future.successful(System.currentTimeMillis())
+    _ <- Future.successful(println(s"Execution time ${end - start}"))
+  } yield t
+
+  def action(v: Int) = {
+    Thread.sleep(1000)
+    println(s"Action $v in ${Thread.currentThread().getName}")
+    v
+  }
+
+  val f5 = Future(action(10))(ec)
+  val f6 = Future(action(20))(ec2)
+
+  val f7 = f5.flatMap{ v1 =>
+    action(50)
+    f6.map{ v2 =>
+      action(v1 + v2)
+    }(ec4)
+  }(ec3)
+
+
+
+  object FutureSyntax{
+
+    def flatMap[T, B](future: Future[T])(f: T => Future[B]): Future[B] = {
+      val p = Promise[B]
+      future.onComplete {
+        case Failure(exception) => p.failure(exception)
+        case Success(value) => f(value).onComplete {
+          case Failure(exception) => p.failure(exception)
+          case Success(value) => p.success(value)
+        }
+      }
+      p.future
+    }
+
+    def make[T](v: => T)(implicit ec: ExecutionContext): Future[T] = {
+      val p = Promise[T]
+      val r = new Runnable {
+        override def run(): Unit = p.complete(Try(v))
+      }
+      ec.execute(r)
+      p.future
+    }
+  }
 
 }
