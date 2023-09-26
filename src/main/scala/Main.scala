@@ -1,3 +1,4 @@
+import module1.implicits.{implicit_conversions, implicit_scopes}
 import module1.threads.{Thread1, ToyFuture, getRatesLocation1, getRatesLocation2, getRatesLocation3, getRatesLocation4, printRunningTime}
 import module1.{executor, future, hof, lazyOps, list, try_, type_system}
 
@@ -63,12 +64,14 @@ object Main {
 //    )
 
 
+//
+//    future.printRunningTime(
+//      future.f7
+//    )
+//
+//    Thread.sleep(4000)
 
-    future.printRunningTime(
-      future.f7
-    )
-
-    Thread.sleep(4000)
+    implicit_scopes
 
   }
 }
