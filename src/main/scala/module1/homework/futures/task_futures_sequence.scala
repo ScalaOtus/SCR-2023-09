@@ -22,5 +22,4 @@ object task_futures_sequence {
   def fullSequence[A](futures: List[Future[A]])
                      (implicit ex: ExecutionContext): Future[(List[A], List[Throwable])] =
     task"Реализуйте метод `fullSequence`" ()
-
 }

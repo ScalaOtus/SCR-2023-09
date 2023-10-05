@@ -3,9 +3,12 @@ import module1.implicits.{implicit_conversions, implicit_scopes}
 import module1.threads.{Thread1, ToyFuture, getRatesLocation1, getRatesLocation2, getRatesLocation3, getRatesLocation4, printRunningTime}
 import module1.validation.UserDTO
 import module1.{executor, future, hof, lazyOps, list, try_, type_system, validation}
+import module2.{toyModel, zioConstructors}
 import module2.functional_effects.functionalProgram.{declarativeEncoding, executableEncoding}
+import zio.ZIO
 
 import scala.concurrent.Future
+import scala.io.StdIn
 
 
 object Main {
@@ -75,13 +78,20 @@ object Main {
 //    Thread.sleep(4000)
 
 
-    val p: executableEncoding.Console[Unit] = executableEncoding.gE
-    val p2: executableEncoding.Console[Unit] = executableEncoding.gE
+//    val p: executableEncoding.Console[Unit] = executableEncoding.gE
+//    val p2: executableEncoding.Console[Unit] = executableEncoding.gE
+//
+//    val p3: executableEncoding.Console[Unit] = p.flatMap(_ => p2)
+//
+//    val p4: declarativeEncoding.Console[Unit] = declarativeEncoding.gD
+//
+//    declarativeEncoding.interpret(p4)
 
-    val p3: executableEncoding.Console[Unit] = p.flatMap(_ => p2)
+      def readStr: ZIO[Any, Throwable, Unit] = ZIO.effect(println("Введите число от 1 до 20")) *>
+        ZIO.effect(StdIn.readLine()).flatMap(str => ZIO.effect(println(str.toInt))
+          ).orElse(readStr)
 
-    val p4: declarativeEncoding.Console[Unit] = declarativeEncoding.gD
+      zio.Runtime.default.unsafeRun(readStr)
 
-    declarativeEncoding.interpret(p4)
   }
 }
