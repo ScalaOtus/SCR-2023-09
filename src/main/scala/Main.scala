@@ -1,9 +1,10 @@
 import cats.data.Validated
+import cats.effect.{IO, SyncIO}
 import module1.implicits.{implicit_conversions, implicit_scopes}
 import module1.threads.{Thread1, ToyFuture, getRatesLocation1, getRatesLocation2, getRatesLocation3, getRatesLocation4, printRunningTime}
 import module1.validation.UserDTO
 import module1.{executor, future, hof, lazyOps, list, try_, type_system, validation}
-import module2.{toyModel, zioConstructors}
+import module2.{toyCatsEffect, toyModel, typeClasses, zioConstructors}
 import module2.functional_effects.functionalProgram.{declarativeEncoding, executableEncoding}
 import zio.ZIO
 
@@ -87,11 +88,8 @@ object Main {
 //
 //    declarativeEncoding.interpret(p4)
 
-      def readStr: ZIO[Any, Throwable, Unit] = ZIO.effect(println("Введите число от 1 до 20")) *>
-        ZIO.effect(StdIn.readLine()).flatMap(str => ZIO.effect(println(str.toInt))
-          ).orElse(readStr)
 
-      zio.Runtime.default.unsafeRun(readStr)
+
 
   }
 }
