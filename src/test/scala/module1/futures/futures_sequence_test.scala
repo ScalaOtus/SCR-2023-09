@@ -22,7 +22,7 @@ class futures_sequence_test extends AnyFlatSpec {
       }
     }
 
-    override def reportFailure(cause: Throwable): Unit = ???
+    override def reportFailure(cause: Throwable): Unit = println(cause.getLocalizedMessage)
   }
 
   def await[A](future: Future[A]): A = Await.result(future, Duration.Inf)
