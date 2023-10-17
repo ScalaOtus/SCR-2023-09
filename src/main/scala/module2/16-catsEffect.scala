@@ -2,6 +2,7 @@ package module2
 
 
 import cats.effect.IO.Async
+import cats.effect.concurrent.Ref
 import cats.{Applicative, ApplicativeError, Apply, Defer, Eval, FlatMap, Functor, Monad, MonadError}
 import cats.effect.{Async, Concurrent, ConcurrentEffect, ExitCase, ExitCode, IO, IOApp, Sync, SyncIO, Timer}
 
@@ -13,6 +14,7 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.language.{higherKinds, postfixOps}
 import scala.util.Try
 import cats.implicits._
+
 
 import scala.io.StdIn
 
@@ -124,24 +126,5 @@ object toyCatsEffect {
       override def pure[A](x: A): IO[A] = IO.delay(x)
     }
   }
-
-}
-
-
-object catsEffectIO {
-
-  // демонстрируем конструкторы
-
-
-
-  // создание из других эффектов
-
-
-
-  // кобинаторы
-
-
-
-  // работа c ошибками
 
 }

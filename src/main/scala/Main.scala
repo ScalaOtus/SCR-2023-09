@@ -92,6 +92,8 @@ object Main {
 
 
 
+    zio.Runtime.default.unsafeRun(zioConcurrency.g1)
+
   }
 }
 
