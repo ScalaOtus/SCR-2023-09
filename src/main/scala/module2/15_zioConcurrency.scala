@@ -98,6 +98,7 @@ object zioConcurrency {
     _ <- f2.join
   } yield ()
 
+
   /**
    *  Greeter
    */
@@ -105,9 +106,8 @@ object zioConcurrency {
   lazy val greeter = (sleep1Second zipRight putStrLn("Hello")).forever
 
   lazy val g1 = for{
-    fiber <- ZIO.effect(while (true){ZIO.effect(println("Hello"))}).fork
+    fiber <- ZIO.effect(while (true){println("Hello")}).fork
     _ <- putStrLn("G1")
-    _ <- ZIO.sleep(5 seconds)
     _ <- fiber.interrupt
   } yield ()
 
