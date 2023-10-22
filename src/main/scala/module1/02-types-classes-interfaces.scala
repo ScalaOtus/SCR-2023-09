@@ -86,6 +86,13 @@ object type_system {
    *
    */
 
+  class Rectangle(length: Double, width: Double) {
+
+    def square(): Double = length * width
+
+    def perimeter(): Double = 2 * (length + width)
+  }
+
 
   /**
    * object

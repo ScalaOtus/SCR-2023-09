@@ -55,6 +55,44 @@ object recursion {
    *
    */
 
+  def fib(n : Int) : Int = {
+    var i = 0
+    var fn1 = 0
+    var fn2 = 0
+    var result = 0;
+    while (i <= n) {
+      fn2 = fn1
+      fn1 = result
+      result = i match {
+        case 0 => 0
+        case 1 => 1
+        case _ => fn1 + fn2
+      }
+      i += 1
+    }
+
+    result
+  }
+
+  def fibRec(n: Int): Int = n match {
+    case 0 => 0
+    case 1 => 1
+    case _ => fibRec(n - 1) + fibRec(n - 2)
+  }
+
+  def fibRecTail(n: Int): Int = {
+
+    @tailrec
+    def loop(n: Int, fn2: Int, fn1: Int): Int = {
+      n match {
+        case 0 => fn2
+        case 1 => fn1
+        case _ => loop(n - 1, fn1, fn1 + fn2)
+      }
+    }
+
+    loop(n, 0, 1)
+  }
 
 }
 
@@ -183,14 +221,42 @@ object hof{
       case Some(v) => f(v)
       case None => None
     }
+
+    /**
+     *
+     * Реализовать метод printIfAny, который будет печатать значение, если оно есть
+     */
+
+    def printIfAny(): Unit = this match {
+      case Some(v) => println(v)
+      case None => ()
+    }
+
+    /**
+     *
+     * Реализовать метод filter, который будет возвращать не пустой Option
+     * в случае если исходный не пуст и предикат от значения = true
+     */
+    def filter(p: T => Boolean): Option[T] = this match {
+      case None => None
+      case Some(v) => if (p(v)) this else None
+    }
   }
   case class Some[T](v: T) extends Option[T]
   case object None extends Option[Nothing]
 
   object Option{
 
+    /**
+     *
+     * Реализовать метод zip, который будет создавать Option от пары значений из 2-х Option
+     */
+    def zip[A, B](v1: Option[A], v2: Option[B]): Option[(A, B)] = (v1, v2) match {
+      case (None, _) => None
+      case (_, None) => None
+      case (Some(v1), Some(v2)) => Some (v1, v2)
+    }
   }
-
 
 
 
@@ -198,25 +264,6 @@ object hof{
   // Covariant + отношения переносятся на контейнер
   // Contravariant - отношения переносятся на контейнер наоборот
   // Invariant - нет отношений
-
-
-  /**
-   *
-   * Реализовать метод printIfAny, который будет печатать значение, если оно есть
-   */
-
-
-  /**
-   *
-   * Реализовать метод zip, который будет создавать Option от пары значений из 2-х Option
-   */
-
-
-  /**
-   *
-   * Реализовать метод filter, который будет возвращать не пустой Option
-   * в случае если исходный не пуст и предикат от значения = true
-   */
 
  }
 
@@ -276,12 +323,6 @@ object hof{
       * Реализовать метод map для списка который будет применять некую ф-цию к элементам данного списка
       */
 
-
-     /**
-      *
-      * Реализовать метод filter для списка который будет фильтровать список по некому условию
-      */
-
       def reverse: List[T] = foldLeft(List[T]()){case (acc, v) => v :: acc}
 
       def :::[TT >: T](that: List[TT]): List[TT] = {
@@ -298,7 +339,7 @@ object hof{
 
 
 
-      def map[B](f: T => B): List[B] = ???
+      def map[B](f: T => B): List[B] = flatMap(v => f(v) :: Nil)
 
       def flatMap[B](f: T => List[B]): List[B] = this match {
         case ::(head, tail) => f(head) ::: tail.flatMap(f)
@@ -321,29 +362,47 @@ object hof{
         r._2
       }
 
-      def drop(n: Int): List[T] = ???
+      private def tail1(): List[T] = this match {
+        case Nil => Nil
+        case _ :: t => t
+      }
+
+      def drop(n: Int): List[T] = n match {
+        case 0 => this
+        case _ => this.tail1().drop(n - 1)
+      }
+
+      def drop1(n: Int): List[T] = {
+        val r = this.foldLeft((0, this)) {
+          case ((i, acc), _) => acc match {
+            case Nil => (n, Nil)
+            case _ :: t => if (i == n) (i, acc) else (i + 1, t)
+          }
+        }
+        r._2
+      }
 
    }
 
-   val l1: List[Int] = ???
-   val l2: List[Int] = ???
+//   val l1: List[Int] = ???
+//   val l2: List[Int] = ???
+//
+//
+//   val l3: List[Int] = for{
+//     e1 <- l1
+//     e2 <- l2
+//   } yield e1 + e2
+//
+//   val l4: List[Int] = l1.flatMap(e1 => l2.map(e2 => e1 + e2))
 
 
-   val l3: List[Int] = for{
-     e1 <- l1
-     e2 <- l2
-   } yield e1 + e2
-
-   val l4: List[Int] = l1.flatMap(e1 => l2.map(e2 => e1 + e2))
-
-
-   val o1: Option[Int] = ???
-   val o2: Option[Int] = ???
-
-   val o3: Option[Int] = for{
-     e1 <- o1
-     e2 <- o2
-   } yield e1 + e2
+//   val o1: Option[Int] = ???
+//   val o2: Option[Int] = ???
+//
+//   val o3: Option[Int] = for{
+//     e1 <- o1
+//     e2 <- o2
+//   } yield e1 + e2
 
 
 
@@ -370,6 +429,8 @@ object hof{
       * где каждый элемент будет увеличен на 1
       */
 
+    def incList(l: List[Int]): List[Int] = l.map(v => v + 1)
+
 
     /**
       *
@@ -377,4 +438,11 @@ object hof{
       * где к каждому элементу будет добавлен префикс в виде '!'
       */
 
+   def shoutString(l: List[String]): List[String] = l.map(v => "!".concat(v))
+
+   /**
+    *
+    * Реализовать метод filter для списка который будет фильтровать список по некому условию
+    */
+   def filter[T](l: List[T], p: T => Boolean): List[T] = l.flatMap(v => if(p(v)) v :: Nil else Nil)
  }
