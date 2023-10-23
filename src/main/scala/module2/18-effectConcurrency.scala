@@ -44,20 +44,23 @@ object effectConcurrency{
   /**
    * Создать эффект который печатает в консоль GetExchangeRatesLocation1 спустя 3 секунды
    */
-  val getExchangeRatesLocation1: IO[String] = sleep3second *> IO.delay("GetExchangeRatesLocation1")
+  val getExchangeRatesLocation1: IO[String] = sleep3second *>
+    IO.delay("GetExchangeRatesLocation1")
 
 
   /**
    * Создать эффект который печатает в консоль GetExchangeRatesLocation2 спустя 1 секунд
    */
 
-  val getExchangeRatesLocation2: IO[String] = sleep1second *> IO.delay("GetExchangeRatesLocation2")
+  val getExchangeRatesLocation2: IO[String] = sleep1second *>
+    IO.delay("GetExchangeRatesLocation2")
 
   /**
    * Написать эффект котрый получит курсы из обеих локаций паралельно
    */
 
-  val g2l: IO[(String, String)] = (getExchangeRatesLocation1.debug, getExchangeRatesLocation2.debug).tupled.debug
+  val g2l: IO[(String, String)] = (getExchangeRatesLocation1.debug,
+    getExchangeRatesLocation2.debug).tupled.debug
 
 
   val g2lP: IO[(String, String)] = Parallel[IO].sequential(
@@ -65,7 +68,8 @@ object effectConcurrency{
       Parallel[IO].parallel(getExchangeRatesLocation2.debug)).tupled
   ).debug
 
-  val g2lP2: IO[(String, String)] = (getExchangeRatesLocation1.debug, getExchangeRatesLocation2.debug).parTupled
+  val g2lP2: IO[(String, String)] = (getExchangeRatesLocation1.debug,
+    getExchangeRatesLocation2.debug).parTupled
 
   val g2lP3: IO[(String, String)] = for{
     fiber1 <- getExchangeRatesLocation1.start.debug
