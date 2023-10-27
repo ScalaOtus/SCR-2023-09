@@ -25,12 +25,7 @@ object zioConcurrency {
    */
 
 
-  def printEffectRunningTime[R, E, A](zio: ZIO[R, E, A]): ZIO[Console with Clock with R, E, A] = for{
-    start <- currentTime
-    r <- zio
-    end <- currentTime
-    _ <- putStrLn(s"Running time ${end - start}")
-  } yield r
+  def printEffectRunningTime[R, E, A](zio: ZIO[R, E, A]): ZIO[Console with Clock with R, E, A] = ???
 
 
 
@@ -49,13 +44,13 @@ object zioConcurrency {
    * Создать эффект который печатает в консоль GetExchangeRatesLocation1 спустя 3 секунды
    */
   lazy val getExchangeRatesLocation1: ZIO[Console with Clock, Nothing, Unit] =
-    sleep3Seconds zipRight putStrLn("GetExchangeRatesLocation1")
+    sleep3Seconds zipRight putStrLn("GetExchangeRatesLocation1").orDie
 
   /**
    * Создать эффект который печатает в консоль GetExchangeRatesLocation2 спустя 1 секунду
    */
   lazy val getExchangeRatesLocation2 =
-    sleep1Second zipRight putStrLn("GetExchangeRatesLocation2")
+    sleep1Second zipRight putStrLn("GetExchangeRatesLocation2").orDie
 
 
   /**

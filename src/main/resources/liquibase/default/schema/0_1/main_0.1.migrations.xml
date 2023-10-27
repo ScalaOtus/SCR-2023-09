@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+        <changeSet id="create Address table" author="avoronets">
+          <createTable tableName="Address">
+              <column name="id" type="text">
+                <constraints primaryKey="true" nullable="false"/>
+              </column>
+              <column name="zipCode" type="text">
+                  <constraints nullable="false"/>
+              </column>
+              <column name="streetAddress" type="text">
+                  <constraints nullable="false"/>
+              </column>
+          </createTable>
+        </changeSet>
+
+        
+        
+        <changeSet id="create PhoneRecord table" author="avoronets">
+          <createTable tableName="PhoneRecord">
+              <column name="id" type="text">
+                <constraints primaryKey="true" nullable="false"/> 
+              </column>
+              <column name="phone" type="text">
+                <constraints nullable="false"/>
+              </column>
+              <column name="fio" type="text">
+                <constraints nullable="false"/>
+              </column>
+              <column name="addressId" type="text">
+                <constraints nullable="false"/>
+              </column>
+          </createTable>
+          <addForeignKeyConstraint baseColumnNames="addressId"
+              baseTableName="PhoneRecord"
+              constraintName="fk_PhoneRecord_addressId_Address_id"
+              referencedColumnNames="id"
+              referencedTableName="Address"/>
+        </changeSet>
+
+</databaseChangeLog>
