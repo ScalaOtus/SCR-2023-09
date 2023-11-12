@@ -1,8 +1,7 @@
 package module1.homework.futures
 
-import module1.homework.futures.HomeworksUtils.TaskSyntax
-
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ExecutionContext, Future, Promise}
+import scala.util.{Failure, Success}
 
 object task_futures_sequence {
 
@@ -19,7 +18,23 @@ object task_futures_sequence {
    * @param futures список асинхронных задач
    * @return асинхронную задачу с кортежом из двух списков
    */
-  def fullSequence[A](futures: List[Future[A]])
-                     (implicit ex: ExecutionContext): Future[(List[A], List[Throwable])] =
-    task"Реализуйте метод `fullSequence`" ()
+  def fullSequence[T](futures: List[Future[T]])
+                     (implicit ex: ExecutionContext): Future[(List[T], List[Throwable])] = {
+    val futuresWithResult = futures.map { future =>
+      val promise = scala.concurrent.Promise[(T, Option[Throwable])]
+      future.onComplete {
+        case Success(value) => promise.success((value, None))
+        case Failure(ex) => promise.success((null.asInstanceOf[T], Some(ex)))
+      }
+      promise.future
+    }
+
+    Future.sequence(futuresWithResult).map { results =>
+      val successfulResults = results.collect { case (value, None) if value != null.asInstanceOf[T] => value }
+      val unsuccessfulResults = results.collect { case (null, Some(ex)) => ex }
+      (successfulResults, unsuccessfulResults)
+    }
+  }
+
+
 }
